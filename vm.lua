@@ -30,12 +30,6 @@ it would be better though if I can reflect the number of input parameters and
 return values and automatically handle that
 
 
-parsing
-parse word
-parse lambda
-parse number or string
-parse comment
-define word
 
 
 what should call word do?
