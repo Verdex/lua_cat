@@ -4,7 +4,7 @@
 parsing
 parse word
 parse lambda
-parse number or string
+parse number or string 
 parse comment
 define word
 --]]
@@ -41,7 +41,9 @@ function remove_spaces( stream )
     while g and string.match( g, "%s" ) do
         g = stream:get()
     end
-    stream:back()
+    if g then
+        stream:back()
+    end
     return true, stream
 end
    
@@ -63,6 +65,9 @@ function parse_num( stream )
     local stringy = table.concat( t )
     return tonumber( stringy ), stream
 end
+
+--function is_end( stream )
+ --   not
 
 -- parser = stream -> (value, stream)
 -- parser -> ( value -> parser ) -> parser
