@@ -40,7 +40,9 @@ end
 -- remember to make an alternate method for these guys
 
 function remove_spaces( stream )
-    while string.match( stream:get(), "%s" ) do
+    local g = stream:get()
+    while g and string.match( g, "%s" ) do
+        g = stream:get()
     end
     stream:back()
     return true, stream
@@ -82,4 +84,20 @@ function unit( v )
         return v, stream
     end
 end
+
+-- [parser] -> parser
+function alt( ... )
+    local t = { ... }
      
+    return function ( stream )
+        local index = 1
+        repeat
+            local value, stream2 = t[index]( stream:copy() )
+            if value then
+                return value, stream2 
+            end
+            index = index + 1
+        until index > #t
+        return nil
+    end
+end
