@@ -19,5 +19,27 @@ pop
 push X
 <what else?>
 
+
+primitive functions can take a single paramter which is a stack object
+it would be better though if I can reflect the number of input parameters and 
+return values and automatically handle that
+
+
+parsing
+parse word
+parse lambda
+parse number or string
+parse comment
+define word
+
+
+what should call word do?
+
+
+what should call primitive do?
+grab function from collection, then either ( reflect inputs, place in function, call function, get outputs on stack, back to vm)
+OR pass stack object to function, then back to vm
+
+
 --]]
 local func_stack = {}
