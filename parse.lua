@@ -37,7 +37,6 @@ function make_stream(content)
 end
 
 
---remember to make a compose method for these guys
 -- remember to make an alternate method for these guys
 
 function remove_spaces( stream )
