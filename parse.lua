@@ -68,5 +68,19 @@ end
 
 -- parser = stream -> (value, stream)
 -- parser -> ( value -> parser ) -> parser
---function bind( parser, gen )
+function bind( parser, gen )
+    return function ( stream )
+        local value, stream2 = parser( stream:copy() )
+        if value then
+            return gen( value )( stream2:copy() )
+        end
+        return nil
+    end
+end
+
+function unit( v ) 
+    return function( stream )
+        return v, stream
+    end
+end
      
