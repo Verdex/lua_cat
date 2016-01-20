@@ -1,8 +1,5 @@
 
 
--- word_addresses : the index in the dictionary where the word is found
--- word : [word_addresses | primitive function]
-
 --[[ 
 
 
