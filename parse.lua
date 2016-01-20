@@ -66,8 +66,12 @@ function parse_num( stream )
     return tonumber( stringy ), stream
 end
 
---function is_end( stream )
- --   not
+function is_end( stream )
+    if stream:get() then
+        return nil
+    end
+    return true, stream
+end
 
 -- parser = stream -> (value, stream)
 -- parser -> ( value -> parser ) -> parser
