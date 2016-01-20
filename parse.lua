@@ -36,9 +36,6 @@ function make_stream(content)
     return ret
 end
 
-
--- remember to make an alternate method for these guys
-
 function remove_spaces( stream )
     local g = stream:get()
     while g and string.match( g, "%s" ) do
