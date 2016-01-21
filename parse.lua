@@ -104,11 +104,12 @@ function parse_word_body_element( stream )
     return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ), f( parse_lambda ) )( stream )
 end
 
-function parse_lambda( stream )  -- todo this needs to unit a lambda ast node
+function parse_lambda( stream )  
     return bind( match_char "[", function () return
            bind( remove_spaces, function () return
-           bind( one_or_more( parse_word_body_element, match_char "]" ), function ( v ) return
-           unit( v ) end ) end ) end )( stream )
+           bind( zero_or_more( parse_word_body_element ), function ( v ) return
+           bind( match_char "]", function () return
+           unit( { tag = "lambda"; value = v } ) end ) end ) end ) end )( stream )
 end
    
 function parse_num( stream )
