@@ -45,8 +45,6 @@ function remove_spaces( stream )
     return true, stream
 end
 
-    
-
 function parse_bracketed( start_sym, end_sym, stream )
     local first = stream:get()
     if first ~= start_sym then
@@ -65,11 +63,19 @@ function parse_bracketed( start_sym, end_sym, stream )
 end
 
 function parse_string( stream )
-    return parse_bracketed( '"', '"', stream )
+    local value, stream = parse_bracketed( '"', '"', stream )
+    if value then
+        return { tag = "string"; value = value }, stream
+    end
+    return nil
 end
 
 function parse_comment( stream )
-    return parse_bracketed( '(', ')', stream )
+    local value, stream = parse_bracketed( '(', ')', stream )
+    if value then
+        return { tag = "comment", value = value }, stream
+    end
+    return nil
 end
 
 function parse_lambda( stream ) -- todo actually this needs to be more complicated
@@ -92,7 +98,7 @@ function parse_num( stream )
     end
     stream:back()
     local stringy = table.concat( t )
-    return tonumber( stringy ), stream
+    return { tag = "number"; value = tonumber( stringy ) }, stream
 end
 
 function is_end( stream )
