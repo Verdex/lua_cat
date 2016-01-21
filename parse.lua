@@ -4,7 +4,6 @@
 parsing
 parse word
 parse lambda
-parse number or string 
 parse comment
 define word
 --]]
@@ -47,14 +46,16 @@ function remove_spaces( stream )
     return true, stream
 end
 
-function parse_string( stream )
+    
+
+function parse_bracketed( start_sym, end_sym, stream )
     local first = stream:get()
-    if first ~= '"' then
+    if first ~= start_sym then
         return nil
     end
     local t = {}
     local tlet = stream:get()
-    while tlet ~= '"' do
+    while tlet ~= end_sym do
         if tlet == nil then
             return nil
         end
@@ -62,6 +63,18 @@ function parse_string( stream )
         tlet = stream:get()
     end
     return table.concat( t ), stream
+end
+
+function parse_string( stream )
+    return parse_bracketed( '"', '"', stream )
+end
+
+function parse_comment( stream )
+    return parse_bracketed( '(', ')', stream )
+end
+
+function parse_lambda( stream )
+    return parse_bracketed( '[', ']', stream )
 end
    
 function parse_num( stream )
