@@ -55,7 +55,9 @@ function parse_word( stream )
         table.insert( t, tlet )
         tlet = stream:get()
     end
-    stream:back()
+    if tlet then
+        stream:back()
+    end
     return { tag = "word"; value = table.concat( t ) }, stream
 end
 
@@ -98,16 +100,16 @@ function parse_word_body_element( stream )
                                     unit( v ) end ) end )
               end
 
-    return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ) )( stream )
+-- todo this is broken b/c the consume_until of a lambda inside of a lambda fails when we hit the first close bracket
+    return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ), f( parse_lambda ) )( stream )
 end
 
-function parse_word_body( stream )
-    return one_or_more( parse_word_body_element )( stream )
+function parse_lambda( stream )  -- todo this needs to unit a lambda ast node
+    return bind( match_char "[", function () return
+           bind( remove_spaces, function () return
+           bind( consume_until( parse_word_body_element, match_char "]" ), function ( v ) return
+           unit( v ) end ) end ) end )( stream )
 end
---[[function parse_lambda( stream ) 
---    return bind( match_char "[", function ()
--           bind( alt( parse_num, parse_string, parse_comment, 
-end --]]
    
 function parse_num( stream )
     local first = stream:get()
@@ -199,3 +201,21 @@ function match_char( char )
         return first, stream
     end
 end
+
+function consume_until( parser, end_parser )
+    return function ( stream )
+        local t = {}
+        local end_value, ret_stream = end_parser( stream:copy() )
+        while not end_value do
+            local value, stream2 = parser( stream )
+            if not value then
+                return nil
+            end
+            stream = stream2
+            table.insert( t, value )
+            end_value, ret_stream = end_parser( stream2:copy() )
+        end
+        return t, ret_stream
+    end
+end
+
