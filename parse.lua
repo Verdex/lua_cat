@@ -96,10 +96,16 @@ function parse_comment( stream )
 end
 
 function parse_top_level( stream )
-    return bind( zero_or_more( alt( parse_definition, parse_comment ) ), function ( vs ) return
+    local f = function ( p ) return bind( p, function ( v ) return 
+                                    bind( remove_spaces, function () return
+                                    unit( v ) end ) end )
+              end
+    return 
+           bind( remove_spaces, function () return 
+           bind( zero_or_more( alt( f( parse_definition ), f( parse_comment ) ) ), function ( vs ) return
            bind( remove_spaces, function () return
            bind( is_end, function () return
-           unit( { tag = "top", value = vs } ) end ) end ) end )
+           unit( { tag = "top", value = vs } ) end ) end ) end ) end )( stream )
 end
 
 function parse_definition( stream )
