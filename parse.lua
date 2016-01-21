@@ -45,6 +45,13 @@ function remove_spaces( stream )
     return true, stream
 end
 
+--[[function parse_word( stream )
+    local first = stream:get()
+    if not first or not string.match( first, "%s" ) then
+        return nil
+    end
+   --]] 
+
 function parse_bracketed( start_sym, end_sym, stream )
     local first = stream:get()
     if first ~= start_sym then
@@ -140,5 +147,25 @@ function alt( ... )
             index = index + 1
         until index > #t
         return nil
+    end
+end
+
+-- parser a -> parser [a]
+function one_or_more( parser )
+    return function( stream )
+        local value, stream2 = parser( stream )
+        if not value then
+            return nil
+        end
+        local t = { value }
+        local temp = stream2
+        repeat
+            value, stream2 = parser( stream2 ) 
+            if value then
+                table.insert( t, value )
+                temp = stream2
+            end
+        until not value
+        return t, temp 
     end
 end
