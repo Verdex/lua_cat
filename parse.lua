@@ -3,11 +3,10 @@
 --[[
 parsing
 parse word
-parse lambda
-parse comment
 define word
 --]]
 
+-- todo the parsing methods need to return an ast type of thing (put tag field in everything?)
 
 
 function make_stream(content)
@@ -73,7 +72,7 @@ function parse_comment( stream )
     return parse_bracketed( '(', ')', stream )
 end
 
-function parse_lambda( stream )
+function parse_lambda( stream ) -- todo actually this needs to be more complicated
     return parse_bracketed( '[', ']', stream )
 end
    
