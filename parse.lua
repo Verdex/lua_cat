@@ -2,7 +2,6 @@
 --module( ..., package.seeall )
 --[[
 parsing
-parse word
 define word
 define lua function
 --]]
@@ -92,8 +91,22 @@ function parse_comment( stream )
     return nil
 end
 
-function parse_lambda( stream ) -- todo actually this needs to be more complicated
-    return parse_bracketed( '[', ']', stream )
+function parse_lambda( stream ) 
+    local first = stream:get()
+    if first ~= "[" then
+        return nil
+    end
+
+    local t = {}
+    local tlet = stream:get()
+    while tlet ~= end_sym do
+        if tlet == nil then
+            return nil
+        end
+        table.insert( t, tlet )
+        tlet = stream:get()
+    end
+    return table.concat( t ), stream
 end
    
 function parse_num( stream )
@@ -174,5 +187,15 @@ function one_or_more( parser )
             end
         until not value
         return t, temp 
+    end
+end
+
+function match_char( char )
+    return function( stream )
+        local first = stream:get()
+        if first ~= char then
+            return nil
+        end
+        return first, stream
     end
 end
