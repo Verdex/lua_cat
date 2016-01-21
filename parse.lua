@@ -45,12 +45,13 @@ end
 
 function parse_word( stream )
     local first = stream:get()
-    if not first or string.match( first, '[%s%[%]%"%(%)]' ) then
+    local pattern = '[%s%[%]%"%(%);]' 
+    if not first or string.match( first, pattern ) then
         return nil
     end
     local t = { first }
     local tlet = stream:get()
-    while tlet and not string.match( tlet, '[%s%[%]%"%(%)]' ) do
+    while tlet and not string.match( tlet, pattern ) do
         table.insert( t, tlet )
         tlet = stream:get()
     end
@@ -103,8 +104,9 @@ function parse_definition( stream )
            bind( parse_word, function ( name ) return
            bind( remove_spaces, function () return
            bind( zero_or_more( parse_word_body_element ), function ( body ) return
+           bind( remove_spaces, function () return
            bind( match_char ";", function () return
-           unit( { tag = "definition"; name = name; body = body } ) end ) end ) end ) end ) end ) end )( stream )
+           unit( { tag = "definition"; name = name.value; body = body } ) end ) end ) end ) end ) end ) end ) end )( stream )
 end
 
 function parse_word_body_element( stream )
