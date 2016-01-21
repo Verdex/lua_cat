@@ -2,7 +2,6 @@
 --module( ..., package.seeall )
 --[[
 parsing
-define word
 define lua function
 --]]
 
@@ -94,13 +93,26 @@ function parse_comment( stream )
     return nil
 end
 
+function parse_top_level( stream )
+    return alt( parse_definition, parse_comment ) -- zero or more and force to end of file
+end
+
+function parse_definition( stream )
+    return bind( match_char ":", function () return
+           bind( remove_spaces, function () return
+           bind( parse_word, function ( name ) return
+           bind( remove_spaces, function () return
+           bind( zero_or_more( parse_word_body_element ), function ( body ) return
+           bind( match_char ";", function () return
+           unit( { tag = "definition"; name = name; body = body } ) end ) end ) end ) end ) end ) end )( stream )
+end
+
 function parse_word_body_element( stream )
     local f = function ( p ) return bind( p, function ( v ) return 
                                     bind( remove_spaces, function () return
                                     unit( v ) end ) end )
               end
 
--- todo this is broken b/c the consume_until of a lambda inside of a lambda fails when we hit the first close bracket
     return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ), f( parse_lambda ) )( stream )
 end
 
