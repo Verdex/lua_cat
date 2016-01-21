@@ -4,9 +4,9 @@
 parsing
 parse word
 define word
+define lua function
 --]]
 
--- todo the parsing methods need to return an ast type of thing (put tag field in everything?)
 
 
 function make_stream(content)
@@ -45,12 +45,19 @@ function remove_spaces( stream )
     return true, stream
 end
 
---[[function parse_word( stream )
+function parse_word( stream )
     local first = stream:get()
-    if not first or not string.match( first, "%s" ) then
+    if not first or string.match( first, "%s" ) then
         return nil
     end
-   --]] 
+    local t = { first }
+    local tlet = stream:get()
+    while tlet and not string.match( tlet, "%s" ) do
+        table.insert( t, tlet )
+        tlet = stream:get()
+    end
+    return { tag = "word"; value = table.concat( t ) }, stream
+end
 
 function parse_bracketed( start_sym, end_sym, stream )
     local first = stream:get()
