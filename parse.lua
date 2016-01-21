@@ -3,6 +3,7 @@
 --[[
 parsing
 define lua function
+booleans
 --]]
 
 
@@ -95,7 +96,10 @@ function parse_comment( stream )
 end
 
 function parse_top_level( stream )
-    return alt( parse_definition, parse_comment ) -- zero or more and force to end of file
+    return bind( zero_or_more( alt( parse_definition, parse_comment ) ), function ( vs ) return
+           bind( remove_spaces, function () return
+           bind( is_end, function () return
+           unit( { tag = "top", value = vs } ) end ) end ) end )
 end
 
 function parse_definition( stream )
