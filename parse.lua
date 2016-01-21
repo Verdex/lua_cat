@@ -55,6 +55,7 @@ function parse_word( stream )
         table.insert( t, tlet )
         tlet = stream:get()
     end
+    stream:back()
     return { tag = "word"; value = table.concat( t ) }, stream
 end
 
@@ -91,23 +92,22 @@ function parse_comment( stream )
     return nil
 end
 
-function parse_lambda( stream ) 
-    local first = stream:get()
-    if first ~= "[" then
-        return nil
-    end
+function parse_word_body_element( stream )
+    local f = function ( p ) return bind( p, function ( v ) return 
+                                    bind( remove_spaces, function () return
+                                    unit( v ) end ) end )
+              end
 
-    local t = {}
-    local tlet = stream:get()
-    while tlet ~= end_sym do
-        if tlet == nil then
-            return nil
-        end
-        table.insert( t, tlet )
-        tlet = stream:get()
-    end
-    return table.concat( t ), stream
+    return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ) )( stream )
 end
+
+function parse_word_body( stream )
+    return one_or_more( parse_word_body_element )( stream )
+end
+--[[function parse_lambda( stream ) 
+--    return bind( match_char "[", function ()
+-           bind( alt( parse_num, parse_string, parse_comment, 
+end --]]
    
 function parse_num( stream )
     local first = stream:get()
