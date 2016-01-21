@@ -46,6 +46,23 @@ function remove_spaces( stream )
     end
     return true, stream
 end
+
+function parse_string( stream )
+    local first = stream:get()
+    if first ~= '"' then
+        return nil
+    end
+    local t = {}
+    local tlet = stream:get()
+    while tlet ~= '"' do
+        if tlet == nil then
+            return nil
+        end
+        table.insert( t, tlet )
+        tlet = stream:get()
+    end
+    return table.concat( t ), stream
+end
    
 function parse_num( stream )
     local first = stream:get()
