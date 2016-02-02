@@ -140,8 +140,12 @@ function parse_word_body_element( stream )
                                     unit( v ) end ) end )
               end
 
-    -- todo add boolean
-    return alt( f( parse_comment ), f( parse_string ), f( parse_num ), f( parse_word ), f( parse_lambda ) )( stream )
+    return alt( f( parse_comment ), 
+                f( parse_string ), 
+                f( parse_num ), 
+                f( parse_boolean ),
+                f( parse_word ), 
+                f( parse_lambda ) )( stream )
 end
 
 function parse_lambda( stream )  
