@@ -1,6 +1,5 @@
 
 
--- module( ..., package.seeall )
 
 function blah( ast )
     if ast.tag == "word" then
