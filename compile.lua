@@ -17,6 +17,7 @@ function blah( ast )
 
     elseif ast.tag == "comment" then
 
--- todo add boolean
+    elseif ast.tag == "boolean" then
+
     end
 end
