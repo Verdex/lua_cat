@@ -1,6 +1,23 @@
 
 
+require 'seq'
 -- input is an ast and the output is ... a list of instructions for the vm
+
+-- ast -> instruction list
+function compile( ast )
+
+    if ast.tag ~= "top" then
+        error "compile needs to be passed an AST with a top level node"
+    end
+
+    -- ast.value is a list of comments and definitions
+    local i = filter( function( a ) return a.tag ~= "comment" end, ast.value )
+
+    for _, v in ipairs( i ) do
+        print( v.tag )
+    end
+
+end
 
 function blah( ast )
     if ast.tag == "word" then 
