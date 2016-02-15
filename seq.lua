@@ -40,17 +40,3 @@ function fold( c, i, l )
     return sum
 end
 
-function sum( c, l )
-    return fold( function ( a, b ) return a + b end, 0, map( c, l ) )
-end
-
-function max( c, l )
-    local o = map( c, l )
-    local m = o[1]
-    for _, v in ipairs( o ) do
-        if v > m then
-            m = v
-        end
-    end
-    return m
-end
