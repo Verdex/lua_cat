@@ -11,10 +11,13 @@ function compile( ast )
     end
 
     -- ast.value is a list of comments and definitions
-    local i = filter( function( a ) return a.tag ~= "comment" end, ast.value )
+    -- get rid of comments
+    local defs = filter( function( a ) return a.tag ~= "comment" end, ast.value )
 
-    for _, v in ipairs( i ) do
-        print( v.tag )
+    for _, v in ipairs( defs ) do
+        if v.tag ~= "definition" then
+            error "compiler top level contains non definition or non comment node"
+        end
     end
 
 end

@@ -5,7 +5,6 @@ define lua function
 --]]
 
 
-
 function make_stream(content)
     local ret = { index = 1, content = content or "" }
     ret.copy = function ( self )
