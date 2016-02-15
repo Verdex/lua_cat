@@ -60,6 +60,7 @@ function parse_word( stream )
     return { tag = "word"; value = table.concat( t ) }, stream
 end
 
+-- TODO might not need booleans (just assume their a word and replace them with a compiler specific value)
 function parse_boolean( stream )
     local t = bind( match_char( "t" ), function () return
               bind( match_char( "r" ), function () return
