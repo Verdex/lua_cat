@@ -13,11 +13,6 @@ pointer to another word or a primitive action
 
 
 
-call defined word
-call primitive function
-call word on stack
-pop 
-push X
 dup ( a -- a a )
 drop ( a -- )
 swap ( a b -- b a )
@@ -40,7 +35,7 @@ what should call primitive do?
 grab function from collection, then either ( reflect inputs, place in function, call function, get outputs on stack, back to vm)
 OR pass stack object to function, then back to vm
 
-step one parse into ast
+step one parse into ast 
 step two create dictionary with all of the word definitions
 step three create instructions array with all word definitions and a lookup table of words to their starting point
     in the instruction array
