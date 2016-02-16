@@ -59,24 +59,6 @@ function parse_word( stream )
     return { tag = "word"; value = table.concat( t ) }, stream
 end
 
--- TODO might not need booleans (just assume their a word and replace them with a compiler specific value)
-function parse_boolean( stream )
-    local t = bind( match_char( "t" ), function () return
-              bind( match_char( "r" ), function () return
-              bind( match_char( "u" ), function () return
-              bind( match_char( "e" ), function () return
-              unit( { tag = "boolean"; value = true } ) end ) end ) end ) end )
-
-    local f = bind( match_char( "f" ), function () return
-              bind( match_char( "a" ), function () return
-              bind( match_char( "l" ), function () return
-              bind( match_char( "s" ), function () return
-              bind( match_char( "e" ), function () return
-              unit( { tag = "boolean"; value = false } ) end ) end ) end ) end ) end )
-
-    return alt( t, f )( stream )
-end
-
 function parse_bracketed( start_sym, end_sym, stream )
     local first = stream:get()
     if first ~= start_sym then
@@ -143,7 +125,6 @@ function parse_word_body_element( stream )
     return alt( f( parse_comment ), 
                 f( parse_string ), 
                 f( parse_num ), 
-                f( parse_boolean ),
                 f( parse_word ), 
                 f( parse_lambda ) )( stream )
 end
