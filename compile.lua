@@ -86,6 +86,9 @@ end
 function is_special_word( name ) 
     return name == "dup" 
         or name == "" 
+
+
+        -- TODO make sure to add true, false, and call lambda (whatever that should be called)
 end
 
 function process_special_word()
@@ -100,7 +103,7 @@ function process_special_word()
     return { { instr.call_primitive, key }}
 end
 
-function blah( ast )
+function blah( ast ) -- TODO delete
     if ast.tag == "word" then 
 
 
