@@ -12,13 +12,12 @@ pointer to another word or a primitive action
 -- a known starting address
 
 
-
-dup ( a -- a a )
-drop ( a -- )
-swap ( a b -- b a )
-over ( a b -- a b a )
+-- the other primitive lua words should be handled so far
 rot ( a b c -- b c a )
 -rot ( a b c -- c a b )
+call lambda on stack -- this is a VM thing that needs to happen
+
+
 
 primitive functions can take a single paramter which is a stack object
 it would be better though if I can reflect the number of input parameters and 
