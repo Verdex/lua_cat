@@ -17,7 +17,15 @@ function display( t )
         r_part = "{" .. r .. " }"
     end
 
-    local a_part = table.concat( t, " " )
+    local array = {}
+    for _, v in ipairs( t ) do
+        table.insert( array, v )
+    end
+    local a_part = "" 
+    if #array > 0 then
+        a_part = fold( function( s, v ) return s .. " " .. display( v ) end, "", array ) 
+    end
+    
     if a_part ~= "" and r_part ~= "" then
         return string.format( "-| %s %s |-", r_part, "[ " .. a_part .. " ]" )
     elseif a_part ~= "" then
