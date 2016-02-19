@@ -33,7 +33,6 @@ end
 
 
 function process_def( def )
-        
 end
 
 -- take lambda ast node return an anonomous word def block (need gensym) AND a push word onto 
@@ -47,7 +46,16 @@ function process_lambda( node )
 
 end
 
-function process_list_of_things_not_def()
+function process_everything_but_def( node )
+    if node.tag == "number" then
+        return process_number( node )
+    elseif node.tag == "string" then
+        return process_string( node )
+    elseif node.tag == "word" then
+        return process_string( node )
+    else
+        error "anything but def error"
+    end
 end
 
 -- node : number node
@@ -74,40 +82,30 @@ function process_word( node )
     if node.tag ~= "word" then
         error "compiler expected word node"
     end
-    if is_specal_word( node.value ) then
-        return process_special_word( node.value )
+    if specal_word( node.value ) then
+        return special_word( node.value )
     else
-        return { { instr.call_word, node.value } }
+        return { { instr.call_word, node.value } } -- TODO still needs a second pass to replace names with addresses
     end
 end
 
--- TODO I'm going to need a list of special words one way or the other (dup, etc)
--- so I might as well add true and false there as well 
-function is_special_word( name ) 
-    return name == "dup" 
-        or name == "" 
-
-
-        -- TODO make sure to add true, false, and call lambda (whatever that should be called)
-end
-
-function process_special_word()
--- TODO grab the primitive word key from the primitive.lua and place it in index 2
-    local key = ''
+function special_word( name ) 
     if name == "dup" then
-        key = primvitive_key.dup
-    elseif true then
-
+        return { { instr.call_primitive, primitive_key.dup } }
+    elseif name == "drop" then
+        return { { instr.call_primitive, primitive_key.drop } }
+    elseif name == "swap" then
+        return { { instr.call_primitive, primitive_key.swap } }
+    elseif name == "over" then
+        return { { instr.call_primitive, primitive_key.over } }
+    elseif name == "true" then
+        return { { instr.push_bool, true } }
+    elseif name == "false" then
+        return { { instr.push_bool, false } }
+    elseif name == "call" then  -- pop the value on the stack and call it if it's a word
+        return { { instr.call_word_on_stack } }
+    else
+        return false
     end
-
-    return { { instr.call_primitive, key }}
 end
 
-function blah( ast ) -- TODO delete
-    if ast.tag == "word" then 
-
-
-    elseif ast.tag == "lambda" then
-
-    end
-end
