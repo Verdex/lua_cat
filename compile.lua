@@ -3,6 +3,7 @@
 require 'seq'
 require 'vm_instr'
 require 'primitive'
+require 'util'
 -- input is an ast and the output is ... a list of instructions for the vm
 
 
@@ -29,6 +30,26 @@ function compile( ast )
     end
 
 
+end
+
+--[[
+    code block 
+--]]
+function cblock_cons( name, list_of_instr )
+    return { name = name; instr = list_of_instr }
+end
+
+--[[
+    A p block is a unit that a process_* method will return
+--]]
+function pblock_cons( list_of_instr, list_of_cblock )
+    return { instr = list_of_instr, cblock = list_of_cblock }
+end
+
+function pblock_join( a, b )
+    local instr = concat( a.instr, b.instr )
+    local blocks = concat( a.cblock, b.cblock )
+    return pblock_cons( instr, blocks )
 end
 
 
@@ -64,7 +85,7 @@ function process_number( node )
     if node.tag ~= "number" then
         error "compiler expected number node"
     end
-    return { { instr.push_number, node.value } } 
+    return pblock_cons( { { instr.push_number, node.value } }, {} )
 end
 
 -- node : string node
@@ -73,7 +94,7 @@ function process_string( node )
     if node.tag ~= "string" then
         error "compiler expected string node"
     end
-    return { { instr.push_string, node.value } }
+    return pblock_cons( { { instr.push_string, node.value } }, {} )
 end
 
 -- node : word node
@@ -85,25 +106,25 @@ function process_word( node )
     if specal_word( node.value ) then
         return special_word( node.value )
     else
-        return { { instr.call_word, node.value } } -- TODO still needs a second pass to replace names with addresses
+        return pblock_cons( { { instr.call_word, node.value } }, {} ) -- TODO still needs a second pass to replace names with addresses
     end
 end
 
 function special_word( name ) 
     if name == "dup" then
-        return { { instr.call_primitive, primitive_key.dup } }
+        return pblock_cons( { { instr.call_primitive, primitive_key.dup } }, {} )
     elseif name == "drop" then
-        return { { instr.call_primitive, primitive_key.drop } }
+        return pblock_cons( { { instr.call_primitive, primitive_key.drop } }, {} )
     elseif name == "swap" then
-        return { { instr.call_primitive, primitive_key.swap } }
+        return pblock_cons( { { instr.call_primitive, primitive_key.swap } }, {} )
     elseif name == "over" then
-        return { { instr.call_primitive, primitive_key.over } }
+        return pblock_cons( { { instr.call_primitive, primitive_key.over } }, {} )
     elseif name == "true" then
-        return { { instr.push_bool, true } }
+        return pblock_cons( { { instr.push_bool, true } }, {} )
     elseif name == "false" then
-        return { { instr.push_bool, false } }
+        return pblock_cons( { { instr.push_bool, false } }, {} )
     elseif name == "call" then  -- pop the value on the stack and call it if it's a word
-        return { { instr.call_word_on_stack } }
+        return pblock_cons( { { instr.call_word_on_stack } }, {} )
     else
         return false
     end
