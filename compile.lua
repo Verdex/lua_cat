@@ -65,13 +65,21 @@ end
 -- take lambda ast node return an anonomous word def block (need gensym) AND a push word onto 
 -- stack opcode
 -- node : lambda node 
--- return : [ instr ], ???
+-- return : pblock 
 function process_lambda( node )
     if node.tag ~= "lambda" then
         error "compiler expected lambda node"
     end
+    local name = gensym()
+    local lambda_body_results = map( process_everything_but_def, node.value )
+    local joined_results = fold( pblock_join, pblock_cons( {}, {} ), lambda_body_results )
+    local lambda_cblock = cblock_cons( name, joined_results.instr )
+    local cblock_list = joined_results.cblock
 
+    table.insert( cblock_list, lambda_cblock )
 
+    -- TODO still need to replace name instance with address
+    return pblock_cons( { { instr.push_word, name } }, cblock_list )
 end
 
 function process_everything_but_def( node )
@@ -80,14 +88,16 @@ function process_everything_but_def( node )
     elseif node.tag == "string" then
         return process_string( node )
     elseif node.tag == "word" then
-        return process_string( node )
+        return process_word( node )
+    elseif node.tag == "lambda" then
+        return process_lambda( node )
     else
         error "anything but def error"
     end
 end
 
 -- node : number node
--- return : [ instr ] 
+-- return : pblock 
 function process_number( node )
     if node.tag ~= "number" then
         error "compiler expected number node"
@@ -96,7 +106,7 @@ function process_number( node )
 end
 
 -- node : string node
--- return : [ instr ]
+-- return : pbock 
 function process_string( node )
     if node.tag ~= "string" then
         error "compiler expected string node"
@@ -105,12 +115,12 @@ function process_string( node )
 end
 
 -- node : word node
--- return : [ instr ] 
+-- return : pblock 
 function process_word( node )
     if node.tag ~= "word" then
         error "compiler expected word node"
     end
-    if specal_word( node.value ) then
+    if special_word( node.value ) then
         return special_word( node.value )
     else
         return pblock_cons( { { instr.call_word, node.value } }, {} ) -- TODO still needs a second pass to replace names with addresses
