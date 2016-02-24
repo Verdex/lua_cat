@@ -52,6 +52,12 @@ function pblock_join( a, b )
     return pblock_cons( instr, blocks )
 end
 
+local gs_index = 0
+function gensym()
+    gs_index = gs_index + 1
+    return "anon_method_" .. gs_index
+end
+
 
 function process_def( def )
 end
@@ -64,6 +70,7 @@ function process_lambda( node )
     if node.tag ~= "lambda" then
         error "compiler expected lambda node"
     end
+
 
 end
 
