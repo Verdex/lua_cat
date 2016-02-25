@@ -58,8 +58,21 @@ function gensym()
     return "anon_method_" .. gs_index
 end
 
-
-function process_def( def )
+--[[
+    return [ cblock ]
+--]]
+function process_def( node )
+   if node.tag ~= "definition" then
+       error "compiler expected definition node"
+    end
+    -- node.name
+    -- node.body
+    local pblocks = map( process_everything_but_def, node.body )
+    local joined_results = fold( pblock_join, pblock_cons( {}, {} ), pblocks )
+    local this_def = cblock_cons( node.name, joined_results.instr )
+    local cblocks = joined_results.cblock
+    table.insert( cblocks, this_def )
+    return cblocks
 end
 
 -- take lambda ast node return an anonomous word def block (need gensym) AND a push word onto 
@@ -91,6 +104,8 @@ function process_everything_but_def( node )
         return process_word( node )
     elseif node.tag == "lambda" then
         return process_lambda( node )
+    elseif node.tag == "comment" then
+        return pblock_cons( {}, {} )
     else
         error "anything but def error"
     end
