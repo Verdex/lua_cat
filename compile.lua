@@ -29,9 +29,28 @@ function compile( ast )
         end
     end
 
-    
+    local code_blocks = fold( concat, {}, map( process_def, defs ) )
+
+    local instr_list = {}
+    local addr = 1
+    local word_addr_list = {}
+    for _, block in ipairs( code_blocks ) do
+        table.insert( word_addr_list, { block.name, addr } )
+        for _, instr in ipairs( block.instr ) do
+            table.insert( instr_list, instr )
+            addr = addr + 1
+        end
+    end
+
+    print( display( word_addr_list ) )
+    print( display( instr_list ) )
+
+    -- keep track of where each name starts at
+    -- remove all call word's and replace with call address
 
 end
+
+
 
 --[[
     code block 
@@ -66,8 +85,6 @@ function process_def( node )
    if node.tag ~= "definition" then
        error "compiler expected definition node"
     end
-    -- node.name
-    -- node.body
     local pblocks = map( process_everything_but_def, node.body )
     local joined_results = fold( pblock_join, pblock_cons( {}, {} ), pblocks )
     local this_def = cblock_cons( node.name, joined_results.instr )
