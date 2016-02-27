@@ -29,7 +29,7 @@ function display( t )
     if a_part ~= "" and r_part ~= "" then
         return string.format( "-| %s %s |-", r_part, "[ " .. a_part .. " ]" )
     elseif a_part ~= "" then
-        return "[ " .. a_part .. " ]"
+        return "[" .. a_part .. " ]"
     elseif r_part ~= "" then
         return r_part 
     else
