@@ -35,6 +35,12 @@ function compile( ast )
     local addr = 1
     local word_addr_list = {}
 
+    -- create a return instruction at the end of every function
+    for _, block in ipairs( code_blocks ) do
+        table.insert( block.instr, { instr.ret } )
+    end
+
+    -- find main and then put it at a known location
     for i, block in ipairs( code_blocks ) do
         if block.name == "main" then
             local main = table.remove( code_blocks, i )
@@ -43,6 +49,8 @@ function compile( ast )
         end
     end
 
+    -- place all of the instructions in a list
+    -- and keep track of functions beginnings
     for _, block in ipairs( code_blocks ) do
 
         if word_addr_list[block.name] then
@@ -60,7 +68,7 @@ function compile( ast )
         error "no main function defined" 
     end
 
-    -- TODO need to handle main function being at a special location
+    -- replace all word names with an address
     for _, v in ipairs( instr_list ) do
         if v[1] == instr.call_word then
             if not word_addr_list[ v[2] ] then

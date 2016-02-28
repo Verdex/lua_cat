@@ -49,5 +49,9 @@ instr = {
     --[[ tag the boolean in index 2 and push it onto the stack
     --]]
     push_bool = "push_bool_instruction", 
+
+    --[[ return
+    --]]
+    ret = "return_instruction",
 }
 
