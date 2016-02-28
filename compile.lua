@@ -34,19 +34,45 @@ function compile( ast )
     local instr_list = {}
     local addr = 1
     local word_addr_list = {}
+
+    for i, block in ipairs( code_blocks ) do
+        if block.name == "main" then
+            local main = table.remove( code_blocks, i )
+            table.insert( code_blocks, 1, main )
+            break
+        end
+    end
+
     for _, block in ipairs( code_blocks ) do
-        table.insert( word_addr_list, { block.name, addr } )
+
+        if word_addr_list[block.name] then
+            error( "redefining word: " .. block.name )
+        end
+
+        word_addr_list[block.name] = addr
         for _, instr in ipairs( block.instr ) do
             table.insert( instr_list, instr )
             addr = addr + 1
         end
     end
 
-    print( display( word_addr_list ) )
-    print( display( instr_list ) )
+    if not word_addr_list["main"] then
+        error "no main function defined" 
+    end
 
-    -- keep track of where each name starts at
-    -- remove all call word's and replace with call address
+    -- TODO need to handle main function being at a special location
+    for _, v in ipairs( instr_list ) do
+        if v[1] == instr.call_word then
+            if not word_addr_list[ v[2] ] then
+                error( "calling non-existent word: " .. v[2] )
+            end
+            v[2] = word_addr_list[ v[2] ]
+        end
+    end
+
+    print( display( word_addr_list ) )
+
+    return instr_list
 
 end
 
@@ -109,7 +135,6 @@ function process_lambda( node )
 
     table.insert( cblock_list, lambda_cblock )
 
-    -- TODO still need to replace name instance with address
     return pblock_cons( { { instr.push_word, name } }, cblock_list )
 end
 
@@ -156,7 +181,7 @@ function process_word( node )
     if special_word( node.value ) then
         return special_word( node.value )
     else
-        return pblock_cons( { { instr.call_word, node.value } }, {} ) -- TODO still needs a second pass to replace names with addresses
+        return pblock_cons( { { instr.call_word, node.value } }, {} ) 
     end
 end
 
