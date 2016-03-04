@@ -4,6 +4,10 @@ require 'vm_obj'
 require 'primitive'
 require 'stack'
 
+local function panic( msg )
+    error( msg or "PANIC" )
+end
+
 function run( instr_array )
 
     local data_stack = stack_create()
@@ -62,7 +66,7 @@ function run( instr_array )
         elseif c_instr[1] == instr.ret then 
             local value_present, value = call_stack:pop()
             if not value_present then
-                -- panic
+                panic( "attempt to return when there is no word to return to" )
             end
             ip = value
 
@@ -72,8 +76,7 @@ function run( instr_array )
             
     end
 
+    return data_stack
+
 end
 
-loocal function panic( msg )
-    error( msg or "PANIC" )
-end

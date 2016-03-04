@@ -80,8 +80,6 @@ function compile( ast )
         end
     end
 
-    print( display( word_addr_list ) )
-
     return instr_list
 
 end
