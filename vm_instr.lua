@@ -28,7 +28,7 @@ instr = {
     --]]
     call_word_on_stack = "call_word_on_stack_instruction",
 
-    --[[ try to look up the lua function in index 1
+    --[[ try to look up the lua function in index 2
          if the function can be found call it
          if the function can't be found then panic
     --]]

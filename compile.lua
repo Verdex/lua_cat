@@ -4,7 +4,6 @@ require 'seq'
 require 'vm_instr'
 require 'primitive'
 require 'util'
--- input is an ast and the output is ... a list of instructions for the vm
 
 
 --[[ foreach definition we need a list of instructions, then we smach everything in one list
