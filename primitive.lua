@@ -1,11 +1,12 @@
 
+
+-- TODO still need math, print, if
+
 -- dup : ( a -- a a )
 local function dup( data_stack, vm )
     local success, v = data_stack:pop()
     if not success then
-        -- TODO how am I going to handle errors? (panic of some sort?)
-        -- if it's a panic don't I need to trigger it somehow?
-        -- call vm.panic() ?
+        vm.panic( "dup failed because there is no data on the stack" )
     end
 
     data_stack:push( v:copy() )
@@ -17,7 +18,7 @@ end
 local function drop( data_stack, vm )
     local success, v = data_stack:pop()
     if not success then
-        -- TODO panic
+        vm.panic( "drop failed because there is no data on the stack" )
     end
 end
 
@@ -26,7 +27,7 @@ local function swap( data_stack, vm )
     local s1, v1 = data_stack:pop()
     local s2, v2 = data_stack:pop()
     if not s1 or not s2 then
-        -- TODO panic
+        vm.panic( "swap failed because there is no data on the stack" )
     end
 
     data_stack:push( v2 )
@@ -39,7 +40,7 @@ local function over( data_stack, vm )
     local s1, v1 = data_stack:pop()
     local s2, v2 = data_stack:pop()
     if not s1 or not s2 then
-        -- TODO panic
+        vm.panic( "over failed because there is no data on the stack" )
     end
 
     data_stack:push( v1:copy() )
