@@ -36,7 +36,10 @@ function compile( ast )
 
     -- create a return instruction at the end of every function
     for _, block in ipairs( code_blocks ) do
-        table.insert( block.instr, { instr.ret } )
+        -- there can't be a ret at the end of main b/c that will cause a panic at the end of the program
+        if block.name ~= "main" then
+            table.insert( block.instr, { instr.ret } )
+        end
     end
 
     -- find main and then put it at a known location
