@@ -1,9 +1,6 @@
 
 require 'vm_obj'
 
--- TODO still need math, if
-
--- if : ( bool lambda lambda -- ? )
 
 local function p( data_stack, vm )
     local success, v = data_stack:pop()
