@@ -18,8 +18,8 @@
 instr = {
 
     --[[ 
-         pop data stack (this should be a word; true case)
          pop data stack (this should be a word; false case) 
+         pop data stack (this should be a word; true case)
          pop data stack (this should be a bool)
     --]]
     if_statement = "if_statement_instruction",
