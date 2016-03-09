@@ -4,6 +4,8 @@ require 'vm_obj'
 require 'primitive'
 require 'stack'
 
+require 'util'
+
 local function panic( msg )
     error( msg or "PANIC" )
 end
@@ -17,10 +19,15 @@ function run( instr_array )
 
     while ip <= #instr_array do
 
+
+        -- TODO need to turn anon method call name into address
+
         local c_instr = instr_array[ ip ]
 
+        print( ip, c_instr[1], c_instr[2] )
+
         if c_instr[1] == instr.call_word then
-            call_stack:push( ip )
+            call_stack:push( ip + 1 )
             ip = c_instr[2]
 
         elseif c_instr[1] == instr.call_word_on_stack then 
@@ -66,13 +73,16 @@ function run( instr_array )
         elseif c_instr[1] == instr.ret then 
             local value_present, value = call_stack:pop()
             if not value_present then
-                panic( "attempt to return when there is no word to return to" )
+                -- end of program
+                break
             end
             ip = value
 
         else 
             panic( "Unknown instruction: " .. c_instr[1] )
         end
+
+        io.read()
             
     end
 
