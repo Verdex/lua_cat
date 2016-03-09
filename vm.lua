@@ -17,11 +17,16 @@ function run( instr_array )
     local ip = 1
     local vm = { panic = panic }
 
+
+    -- TODO remove print( display( instr_array ) )
+
+    -- TODO remove if true then return end
+
     while ip <= #instr_array do
 
         local c_instr = instr_array[ ip ]
 
-        print( ip, c_instr[1], c_instr[2] )
+        -- TODO remove print( ip, c_instr[1], c_instr[2] )
 
         if c_instr[1] == instr.call_word then
             call_stack:push( ip + 1 )
@@ -35,7 +40,7 @@ function run( instr_array )
             if value.tag ~= vm_obj_tag.word then
                 panic "Attempting to call non word on stack"
             end
-            call_stack:push( ip )
+            call_stack:push( ip + 1 )
             ip = value.value 
 
         elseif c_instr[1] == instr.call_primitive then 
@@ -79,7 +84,7 @@ function run( instr_array )
             panic( "Unknown instruction: " .. c_instr[1] )
         end
 
-        io.read()
+        --TODO remove io.read()
             
     end
 

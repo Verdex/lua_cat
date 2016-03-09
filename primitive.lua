@@ -1,6 +1,43 @@
 
+require 'vm_obj'
 
--- TODO still need math, print, if
+-- TODO still need math, if
+
+-- if : ( bool lambda lambda -- ? )
+
+local function p( data_stack, vm )
+    local success, v = data_stack:pop()
+    if not success then
+        vm.panic( "print failed because there is no data on the stack" )
+    end
+    
+    if v.tag == vm_obj_tag.number then
+        print( v.value )
+    elseif v.tag == vm_obj_tag.string then
+        print( v.value )
+    elseif v.tag == vm_obj_tag.bool then
+        print( v.value )
+    elseif v.tag == vm_obj_tag.word or v.tag == vm_obj_tag.primitive_word then
+        print( "WORD" )
+    end
+end
+
+local function add_num( data_stack, vm ) 
+    local s1 , v1 = data_stack:pop()
+    local s2 , v2 = data_stack:pop()
+    if not s1 and not s2 then
+        vm.panic( "add_num failed because there is no data on stack" )
+    end
+    if v1.tag ~= vm_obj_tag.number then
+        vm.panic( "add_num failed because the item on the stack was not a number:  " .. v1.tag )
+    end
+    if v2.tag ~= vm_obj_tag.number then
+        vm.panic( "add_num failed because the item on the stack was not a number:  " .. v2.tag )
+    end
+
+    data_stack:push( create_vm_obj( vm_obj_tag.number,  v1.value + v2.value ) )
+
+end
 
 -- dup : ( a -- a a )
 local function dup( data_stack, vm )
@@ -54,6 +91,8 @@ primitive_key = {
     drop = "drop key",
     swap = "swap key",
     over = "over key",
+    print = "print key",
+    add_num = "add num key",
 }
 
 primitive_word = { 
@@ -61,5 +100,7 @@ primitive_word = {
     [ primitive_key.drop ] = drop,
     [ primitive_key.swap ] = swap,
     [ primitive_key.over ] = over,
+    [ primitive_key.print ] = p,
+    [ primitive_key.add_num ] = add_num,
 }
 

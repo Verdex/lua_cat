@@ -205,6 +205,10 @@ function special_word( name )
         return pblock_cons( { { instr.push_bool, false } }, {} )
     elseif name == "call" then  -- pop the value on the stack and call it if it's a word
         return pblock_cons( { { instr.call_word_on_stack } }, {} )
+    elseif name == "print" then 
+        return pblock_cons( { { instr.call_primitive, primitive_key.print } }, {} )
+    elseif name == "+" then
+        return pblock_cons( { { instr.call_primitive, primitive_key.add_num } }, {} )
     else
         return false
     end
