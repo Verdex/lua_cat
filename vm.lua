@@ -43,6 +43,39 @@ function run( instr_array )
             call_stack:push( ip + 1 )
             ip = value.value 
 
+        elseif c_instr[1] == instr.if_statement then
+
+            local false_case_present, false_case = data_stack:pop()
+            if not false_case_present then
+                panic "false case was not present for if-statement"
+            end
+            if false_case.tag ~= vm_obj_tag.word then
+                panic( "value in false_case position was not word:  " .. false_case.tag )
+            end
+
+            local true_case_present, true_case = data_stack:pop()
+            if not true_case_present then
+                panic "true case was not present for if-statement"
+            end
+            if true_case.tag ~= vm_obj_tag.word then
+                panic( "value in true_case position was not word:  " .. true_case.tag )
+            end
+
+            local bool_present, bool = data_stack:pop()
+            if not bool_present then
+                panic "boolean value was not present for if-statement"
+            end
+            if bool.tag ~= vm_obj_tag.bool then
+                panic( "value in boolean position was not boolean:  " .. bool.tag )
+            end
+
+            call_stack:push( ip + 1 )
+            if bool.value then
+                ip = true_case.value 
+            else
+                ip = false_case.value 
+            end
+
         elseif c_instr[1] == instr.call_primitive then 
             local w = primitive_word[ c_instr[2] ]
             if w then

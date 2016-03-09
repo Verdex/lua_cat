@@ -213,6 +213,8 @@ function special_word( name )
         return pblock_cons( { { instr.call_primitive, primitive_key.sub_num } }, {} )
     elseif name == "=" then
         return pblock_cons( { { instr.call_primitive, primitive_key.equal_num } }, {} )
+    elseif name == "if" then
+        return pblock_cons( { { instr.if_statement } }, {} )
     else
         return false
     end
