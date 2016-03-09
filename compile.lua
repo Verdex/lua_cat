@@ -69,7 +69,7 @@ function compile( ast )
 
     -- replace all word names with an address
     for _, v in ipairs( instr_list ) do
-        if v[1] == instr.call_word then
+        if v[1] == instr.call_word or v[1] == instr.push_word then
             if not word_addr_list[ v[2] ] then
                 error( "calling non-existent word: " .. v[2] )
             end

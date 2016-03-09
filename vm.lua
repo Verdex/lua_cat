@@ -19,9 +19,6 @@ function run( instr_array )
 
     while ip <= #instr_array do
 
-
-        -- TODO need to turn anon method call name into address
-
         local c_instr = instr_array[ ip ]
 
         print( ip, c_instr[1], c_instr[2] )
