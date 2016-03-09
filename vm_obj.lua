@@ -9,7 +9,7 @@ vm_obj_tag = {
 }
 
 local function copy( self )
-    return create_vm_obj( self.t, self.value )
+    return create_vm_obj( self.tag, self.value )
 end
 
 

@@ -31,7 +31,7 @@ function run( instr_array )
                 panic "no data on stack when trying to call word on stack"
             end
             if value.tag ~= vm_obj_tag.word then
-                panic "Attempting to call non word on stack"
+                panic( "Attempting to call non word on stack: " .. value.tag )
             end
             call_stack:push( ip + 1 )
             ip = value.value 
