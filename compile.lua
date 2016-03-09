@@ -211,6 +211,8 @@ function special_word( name )
         return pblock_cons( { { instr.call_primitive, primitive_key.add_num } }, {} )
     elseif name == "-" then
         return pblock_cons( { { instr.call_primitive, primitive_key.sub_num } }, {} )
+    elseif name == "=" then
+        return pblock_cons( { { instr.call_primitive, primitive_key.equal_num } }, {} )
     else
         return false
     end

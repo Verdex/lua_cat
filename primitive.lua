@@ -23,8 +23,8 @@ local function p( data_stack, vm )
 end
 
 local function add_num( data_stack, vm ) 
-    local s1 , v1 = data_stack:pop()
-    local s2 , v2 = data_stack:pop()
+    local s1, v1 = data_stack:pop()
+    local s2, v2 = data_stack:pop()
     if not s1 and not s2 then
         vm.panic( "add_num failed because there is no data on stack" )
     end
@@ -39,8 +39,8 @@ local function add_num( data_stack, vm )
 end
 
 local function sub_num( data_stack, vm )
-    local s1 , v1 = data_stack:pop()
-    local s2 , v2 = data_stack:pop()
+    local s1, v1 = data_stack:pop()
+    local s2, v2 = data_stack:pop()
     if not s1 and not s2 then
         vm.panic( "sub_num failed because there is no data on stack" )
     end
@@ -52,6 +52,22 @@ local function sub_num( data_stack, vm )
     end
 
     data_stack:push( create_vm_obj( vm_obj_tag.number, v2.value - v1.value ) )
+end
+
+local function equal_num( data_stack, vm )
+    local s1, v1 = data_stack:pop()
+    local s2, v2 = data_stack:pop()
+    if not s1 and not s2 then
+        vm.panic( "equal_num failed because there is no data on stack" )
+    end
+    if v1.tag ~= vm_obj_tag.number then
+        vm.panic( "equal_num failed because the item on the stack was not a number:  " .. v1.tag )
+    end
+    if v2.tag ~= vm_obj_tag.number then
+        vm.panic( "equal_num failed because the item on the stack was not a number:  " .. v2.tag )
+    end
+
+    data_stack:push( create_vm_obj( vm_obj_tag.bool, v2.value == v1.value ) )
 end
 
 -- dup : ( a -- a a )
@@ -109,6 +125,7 @@ primitive_key = {
     print = "print key",
     add_num = "add num key",
     sub_num = "sub num key",
+    equal_num = "equal num key",
 }
 
 primitive_word = { 
@@ -119,5 +136,6 @@ primitive_word = {
     [ primitive_key.print ] = p,
     [ primitive_key.add_num ] = add_num,
     [ primitive_key.sub_num ] = sub_num,
+    [ primitive_key.equal_num ] = equal_num,
 }
 
