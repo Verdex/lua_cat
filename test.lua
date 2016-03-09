@@ -6,13 +6,16 @@ require 'vm'
 
 t = parse_top_level( make_stream [[ 
     : main 
-        [ "hello" print ] loop ;
+        2 neap ;
 
     : != 
         = [ false ] [ true ] if ;
 
     : loop
         dup call loop ;
+
+    : neap 
+        dup 0 != [ "again" print - 1 neap ] [ "done" ] if ;
 
     : blarg 
         4 5 ;
